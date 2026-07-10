@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications — PayTrack{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Notifications</h1>
+  {% if notifications %}
+  <form method="post" action="{% url 'notification_mark_all_read' %}">
+    {% csrf_token %}
+    <button class="btn btn-outline-primary btn-sm">Mark all read</button>
+  </form>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="list-group list-group-flush">
+    {% for note in notifications %}
+    <div class="list-group-item {% if not note.is_read %}border-start border-primary border-3{% endif %}">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="fw-semibold">{{ note.title }}</div>
+          <div class="text-muted">{{ note.message }}</div>
+          <div class="small text-muted mt-1">{{ note.created_at|date:"M j, Y g:i A" }}</div>
+        </div>
+        {% if not note.is_read %}
+        <form method="post" action="{% url 'notification_mark_read' note.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-secondary">Mark read</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="list-group-item text-muted">No notifications yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

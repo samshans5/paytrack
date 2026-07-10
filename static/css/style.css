@@ -1,0 +1,21 @@
+body {
+  background-color: #f4f7fb;
+}
+
+.stat-card {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.navbar-brand {
+  letter-spacing: 0.02em;
+}
+
+code {
+  font-size: 0.85em;
+}

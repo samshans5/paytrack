@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Utilities — PayTrack{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">My Utilities</h1>
+  <a href="{% url 'utility_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Utility</a>
+</div>
+
+<div class="row g-3">
+  {% for utility in utilities %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h5 class="card-title mb-1">{{ utility.name }}</h5>
+            <span class="badge text-bg-secondary">{{ utility.get_category_display }}</span>
+            {% if utility.is_active %}
+              <span class="badge text-bg-success">Active</span>
+            {% else %}
+              <span class="badge text-bg-warning">Inactive</span>
+            {% endif %}
+          </div>
+        </div>
+        {% if utility.provider %}
+        <p class="small text-muted mt-2 mb-1">Provider: {{ utility.provider }}</p>
+        {% endif %}
+        {% if utility.account_number %}
+        <p class="small text-muted mb-0">Account: {{ utility.account_number }}</p>
+        {% endif %}
+      </div>
+      <div class="card-footer bg-white border-top-0 d-flex gap-2">
+        <a href="{% url 'utility_edit' utility.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+        <form method="post" action="{% url 'utility_delete' utility.pk %}" onsubmit="return confirm('Delete this utility?');">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12">
+    <div class="alert alert-info">
+      No utilities yet. Add your first one — electricity, water, internet, or any custom bill.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+ {% extends "base.html" %}
+
+{% block title %}Dashboard — PayTrack{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1">Dashboard</h1>
+    <p class="text-muted mb-0">Track bills, set reminders, and never miss a payment.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'bill_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Bill</a>
+    <a href="{% url 'utility_create' %}" class="btn btn-outline-primary">Add Utility</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card stat-card">
+      <div class="card-body">
+        <div class="text-muted small">Active Utilities</div>
+        <div class="display-6">{{ utilities_count }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card stat-card">
+      <div class="card-body">
+        <div class="text-muted small">Pending Bills</div>
+        <div class="display-6">{{ pending_count }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card stat-card {% if overdue_count %}border-danger{% endif %}">
+      <div class="card-body">
+        <div class="text-muted small">Overdue</div>
+        <div class="display-6 {% if overdue_count %}text-danger{% endif %}">{{ overdue_count }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Upcoming Bills (14 days)</span>
+        <a href="{% url 'bill_list' %}" class="small">View all</a>
+      </div>
+      <div class="list-group list-group-flush">
+        {% for bill in upcoming_bills %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ bill.utility.name }}</strong>
+            <div class="small text-muted">Due {{ bill.due_date|date:"M j, Y" }}</div>
+          </div>
+          <div class="text-end">
+            <div class="fw-semibold">${{ bill.amount }}</div>
+            <form method="post" action="{% url 'bill_mark_paid' bill.pk %}" class="d-inline">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'dashboard' %}">
+              <button class="btn btn-sm btn-success">Mark paid</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-muted">No upcoming bills in the next 14 days.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Recent Notifications</span>
+        <a href="{% url 'notification_list' %}" class="small">View all</a>
+      </div>
+      <div class="list-group list-group-flush">
+        {% for note in recent_notifications %}
+        <div class="list-group-item {% if not note.is_read %}bg-light{% endif %}">
+          <div class="fw-semibold">{{ note.title }}</div>
+          <div class="small text-muted">{{ note.message }}</div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-muted">No notifications yet. Set up reminder rules to get started.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Reminders — PayTrack{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1">Reminder Rules</h1>
+    <p class="text-muted mb-0">Get notified before bills are due. Run <code>python manage.py send_reminders</code> daily.</p>
+  </div>
+  <a href="{% url 'reminder_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Rule</a>
+</div>
+
+<div class="card">
+  <div class="list-group list-group-flush">
+    {% for rule in rules %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>
+          {% if rule.utility %}{{ rule.utility.name }}{% else %}All utilities{% endif %}
+        </strong>
+        <div class="small text-muted">
+          Remind {{ rule.days_before_due }} day(s) before due date
+          {% if not rule.is_active %} · <span class="text-warning">Inactive</span>{% endif %}
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{% url 'reminder_edit' rule.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+        <form method="post" action="{% url 'reminder_delete' rule.pk %}" onsubmit="return confirm('Delete this rule?');">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+    {% empty %}
+    <div class="list-group-item text-muted">
+      No reminder rules yet. Try adding rules for 7, 3, and 1 day(s) before due dates.
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
