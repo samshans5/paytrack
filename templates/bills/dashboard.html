@@ -56,7 +56,7 @@
             <div class="small text-muted">Due {{ bill.due_date|date:"M j, Y" }}</div>
           </div>
           <div class="text-end">
-            <div class="fw-semibold">${{ bill.amount }}</div>
+            <div class="fw-semibold">₹{{ bill.amount }}</div>
             <form method="post" action="{% url 'bill_mark_paid' bill.pk %}" class="d-inline">
               {% csrf_token %}
               <input type="hidden" name="next" value="{% url 'dashboard' %}">

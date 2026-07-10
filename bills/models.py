@@ -49,10 +49,12 @@ class BillStatus(models.TextChoices):
 
 
 class Bill(models.Model):
+    objects = models.Manager()
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="bills",
+        db_index=True
     )
     utility = models.ForeignKey(
         Utility,
@@ -120,6 +122,7 @@ class Notification(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="notifications",
+        db_index=True
     )
     bill = models.ForeignKey(
         Bill,
@@ -130,7 +133,7 @@ class Notification(models.Model):
     )
     title = models.CharField(max_length=200)
     message = models.TextField()
-    is_read = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
